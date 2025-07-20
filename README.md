@@ -10,18 +10,18 @@
 ```
 .
 ├── app
-|   ├── connection
+|   ├── connection    // mysql和redis等数据库连接
 │   ├── controller    // controller
 |   ├── entities      // model
-│   ├── service       //service层
-│   ├── router        //路由
+│   ├── service       // service层
+│   ├── router        // 路由
 |   ├── workers       // 挂载定时任务脚本
-│   └── app.ts        //项目入口app.ts
-├── nodemon.json      //nodemon配置
+│   └── app.ts        // 项目入口app.ts
+├── nodemon.json      // nodemon配置
 ├── package.json
 └── tsconfig.json
 ```
-## 安装于启动
+## 安装与启动
 * yarn install
 * yarn run dev  
 * 根目录下config里面添加dev.json,配置dev环境开发的环境变量
@@ -64,12 +64,16 @@ localhost:3000/api/exchange/openocean/gasPrice?chain=bsc
 
 ## 开发阶段二
 
-- 这部分正常应该是一个微服务,这里和主任务放到一起了
-- 设计 token 表，通过定时任务同步 token 信息(暂定 1h 执行一次)
-- 涉及 quote 表，通过定时任务同步 quote 信息(暂定 2h 执行一次)
+添加一个同步渠道商数据的worker,这里和主任务放到一起了,相关建表sql在根目录 sql/*.sql,
+worker里面包含两个定时任务startTokenSyncJob和startQuoteSyncJob，分别用来同步代币信息和价格信息
+迭代内容如下:
+- 设计 token 表，通过定时任务startTokenSyncJob同步 token 信息(暂定 1h 执行一次)
+- 涉及 quote 表，通过定时任务startQuoteSyncJob同步 quote 信息(暂定 2h 执行一次)
 - 如果有多家供应商，可以通过从 db 里面比较 quote，获取最优价
-- 同时上面的 API 也可以通过直接从 DB 读取数据，保证 API 相应速度
+- 同时第一步开发的 API 也可以通过直接从 DB 读取数据，保证 API 响应速度
 
 
 ## 开发阶段三
 * 考虑使用redis缓存
+* 多家渠道商数据同步新建独立的微服务
+* ...
