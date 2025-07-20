@@ -24,6 +24,7 @@
 ## 安装于启动
 * yarn install
 * yarn run dev  
+* 根目录下config里面添加dev.json,配置dev环境开发的环境变量
 
 ## 开发阶段一
 
