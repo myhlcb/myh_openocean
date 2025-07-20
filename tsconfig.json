@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": false,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es6",
+    "sourceMap": false,
+    "outDir": "./dist",
+    "baseUrl": "./"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "emitDecoratorMetadata": true,
+  "experimentalDecorators": true,
+  "files": [
+    "app.ts"
+  ],
+  "include": [
+    "app/**/*"
+  ],
+}
