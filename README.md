@@ -38,28 +38,28 @@
 
 ```bash
 # 获取⽀持的⽹络 chains
-curl localhost:3000/api/exchange/openocean/chains
+curl localhost:3000/api/dex/openocean/chains
 ```
 
 ```bash
 # 获取⽀持的token列表 token
-curl localhost:3000/api/exchange/openocean/token?chain=eth
+curl localhost:3000/api/dex/openocean/token?chain=eth
 ```
 
 ```bash
 # 询价 
-curl localhost:3000/api/exchange/openocean/quote?chain=bsc&inToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&outToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
+curl localhost:3000/api/dex/openocean/quote?chain=bsc&inToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&outToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
 
 ```
 ```bash
 # 构建交易swap
-curl localhost:3000/api/exchange/openocean/swap?chain=bsc&inToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&outToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
+curl localhost:3000/api/dex/openocean/swap?chain=bsc&inToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&outToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
 
 ```
 
 ```bash
 # 获取gasPrice
-localhost:3000/api/exchange/openocean/gasPrice?chain=bsc
+localhost:3000/api/dex/openocean/gasPrice?chain=bsc
 ```
 
 ## 开发阶段二
@@ -74,6 +74,8 @@ worker里面包含两个定时任务startTokenSyncJob和startQuoteSyncJob，分�
 
 
 ## 开发阶段三
-* 考虑使用redis缓存
-* 多家渠道商数据同步新建独立的微服务
-* ...
+* 使用redis缓存token列表(选用redis HASH表存储)(redis.hset(`${provider}:tokenList`, chain, string)
+* 在同步token的定时任务和 api/dex/{provider}/token 接口都缓存
+* 路由的exchange改为dex
+* 去掉同步quote的定时任务
+* 新增一个接口，可以通过渠道商+chain查询tokenlist
