@@ -79,3 +79,8 @@ worker里面包含两个定时任务startTokenSyncJob和startQuoteSyncJob，分�
 * 路由的exchange改为dex
 * 去掉同步quote的定时任务
 * 新增一个接口，可以通过渠道商+chain查询tokenlist
+
+```bash
+# 根据不同渠道商和chain查询tokenList
+localhost:3000/api/dex/token?chain=bsc&provider=openocean
+```
