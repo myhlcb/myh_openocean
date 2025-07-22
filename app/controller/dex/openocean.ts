@@ -1,6 +1,7 @@
 const Joi = require('joi');
 import OpenoceanService from '../../service/exchanges/openocean';
-
+import redis from '../../connection/redis';
+import { Token } from '../../entities/token.entity';
 class OpenoceanController {
   private service: OpenoceanService = new OpenoceanService();
 
@@ -14,8 +15,20 @@ class OpenoceanController {
       chain: Joi.string().required(),
     });
     const { chain } = result.value;
-    const data = await this.service.tokenList(chain);
-    ctx.body = data;
+    const cacheChain = await redis.hget('openocean:tokenList', chain);
+    if (cacheChain) {
+      const data = JSON.parse(cacheChain);
+      ctx.body = { data };
+      return;
+    } else {
+      const data = await Token.find({
+        where: { chain, provider: 'openocean' },
+      });
+      await redis.hset('openocean:tokenList', chain, JSON.stringify(data));
+      redis.expire('openocean:tokenList', 60 * 60 * 2); // 设置过期时间为24小时
+      ctx.body = { data };
+      return;
+    }
   };
 
   public gasPrice = async (ctx) => {

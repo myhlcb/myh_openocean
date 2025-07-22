@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import openoceanController from '../controller/exchanges/openocean';
+import openoceanController from '../controller/dex/openocean';
 const router = new Router({ prefix: '/openocean' });
 router.get('/chains', openoceanController.chains);
 router.get('/token', openoceanController.tokenList);

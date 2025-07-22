@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import exchangeRouter from './exchange.router';
+import dexRouter from './dex.router';
 const router = new Router({ prefix: '/api' });
-router.use(exchangeRouter.routes(), exchangeRouter.allowedMethods());
+router.use(dexRouter.routes(), dexRouter.allowedMethods());
 export default router;

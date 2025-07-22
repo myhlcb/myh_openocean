@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { Promise } from 'bluebird';
 import OpenoceanService from '../service/exchanges/openocean';
 import { createConnect, closeConnect } from '../connection/mysql';
+import redis from '../connection/redis';
+
 import { Token } from '../entities/token.entity';
 import { Quote } from '../entities/quote.entity';
 const service: OpenoceanService = new OpenoceanService();
@@ -21,6 +23,9 @@ const updateTokenTable = async () => {
     console.log(
       `getToken with chain:${chain} and tokenList length:${tokenList.length}`
     );
+    // 按照chains存储到redis
+    await redis.hset('openocean:tokenList', chain, JSON.stringify(tokenList));
+
     return Promise.map(tokenList, async (token) => {
       const {
         code,
@@ -40,7 +45,13 @@ const updateTokenTable = async () => {
         chain,
         provider,
       };
-      const t = await Token.findOneBy({ provider, name, chain, symbol });
+      const t = await Token.findOneBy({
+        provider,
+        name,
+        chain,
+        symbol,
+        address,
+      });
       if (t) {
         console.log(`t exists with id ${t.id} and update`);
         return Token.update({ id: t.id }, params);
@@ -50,7 +61,8 @@ const updateTokenTable = async () => {
       }
     });
   });
-
+  redis.expire('openocean:tokenList', 60 * 60 * 2); // 设置过期时间为2小时
+  console.log('update token list success');
   await closeConnect();
 };
 
